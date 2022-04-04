@@ -7,9 +7,12 @@ import "fmt"
 // All keys will be joined by dot
 // e.g. {"a": {"b":"c"}} => {"a.b":"c"}
 // or {"a": {"b":[1,2]}} => {"a.b.0":1, "a.b.1": 2}
-func flattenFromKey(data map[string]interface{}, k string) map[string]string {
+func flattenFromKey(data map[string]interface{}, k string) (error, map[string]string) {
 	ret := make(map[string]string)
 	v := data[k]
+	if v == nil {
+		return fmt.Errorf("key %s not found", k), ret
+	}
 	switch typed := v.(type) {
 	case map[interface{}]interface{}:
 		for fk, fv := range flatten(convertMap(typed)) {
@@ -26,7 +29,7 @@ func flattenFromKey(data map[string]interface{}, k string) map[string]string {
 	default:
 		ret[k] = fmt.Sprint(typed)
 	}
-	return ret
+	return nil, ret
 }
 
 func flatten(data map[string]interface{}) map[string]string {

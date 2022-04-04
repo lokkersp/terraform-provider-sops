@@ -40,6 +40,11 @@ func dataSourceFileKey() *schema.Resource {
 				Sensitive: true,
 			},
 			"yaml": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
+			"flatten": {
 				Type:      schema.TypeMap,
 				Computed:  true,
 				Sensitive: true,

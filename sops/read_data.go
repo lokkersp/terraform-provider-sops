@@ -84,7 +84,13 @@ func readDataKey(content []byte, format string, key string, d *schema.ResourceDa
 	if err != nil {
 		return err
 	}
-	err = d.Set("yaml", flattenFromKey(data, key))
+	err, value := flattenFromKey(data, key)
+	out, err := yaml.Marshal(map[string]interface{}{key: data[key]})
+	if err != nil {
+		return err
+	}
+	err = d.Set("flatten", value)
+	err = d.Set("yaml", string(out))
 	if err != nil {
 		return err
 	}

@@ -44,7 +44,7 @@ func dataSourceFileKey() *schema.Resource {
 				Computed:  true,
 				Sensitive: true,
 			},
-			"flatten": {
+			"map": {
 				Type:      schema.TypeMap,
 				Computed:  true,
 				Sensitive: true,

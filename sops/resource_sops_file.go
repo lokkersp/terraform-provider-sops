@@ -6,14 +6,15 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	sops2 "go.mozilla.org/sops/v3"
-	"go.mozilla.org/sops/v3/aes"
 	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	sops2 "go.mozilla.org/sops/v3"
+	"go.mozilla.org/sops/v3/aes"
 )
 
 func resourceSourceFile() *schema.Resource {
@@ -66,6 +67,12 @@ func resourceSourceFile() *schema.Resource {
 				Default:      "0777",
 				ValidateFunc: validateMode,
 			},
+			"encrypted_regex": {
+				Type:        schema.TypeString,
+				Description: "A regex pattern denoting the contents in the file to be encrypted",
+				Optional:    true,
+				ForceNew:    true,
+			},
 		},
 		CreateContext: resourceSopsFileCreate,
 		Read:          resourceSopsFileRead,
@@ -116,7 +123,7 @@ func sopsEncrypt(d *schema.ResourceData, content []byte, config *EncryptConfig) 
 		UnencryptedSuffix: "",
 		EncryptedSuffix:   "",
 		UnencryptedRegex:  "",
-		EncryptedRegex:    "",
+		EncryptedRegex:    d.Get("encrypted_regex").(string),
 		KeyGroups:         groups,
 		GroupThreshold:    0,
 	}, content)

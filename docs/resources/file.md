@@ -10,6 +10,10 @@ provider "sops" {
   age = {
     key = "~/.config/sops/age/keys.txt" //path to the key file
   }
+  // GCP KMS configuration
+  gcpkms = {
+    ids = "projects/XXX/locations/XXX/keyRings/XXX/cryptoKeys/XXX" //takes a comma separated list of GCP KMS resource IDs
+  }
   // AWS KMS configuration
   kms = {
     profile = "default"
@@ -35,4 +39,5 @@ resource "sops_file" "secret_data" {
 * `content` - (Required) The content to encrypt.
 * `filename` - (Required) Path to the encrypted file
 * `age` - (Optional) Age configuration
+* `gcpkms` - (Optional) GCP KMS configuration
 * `kms` - (Optional) AWS KMS configuration

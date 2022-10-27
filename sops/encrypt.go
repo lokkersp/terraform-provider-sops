@@ -11,7 +11,7 @@ import (
 	//"go.mozilla.org/sops/v3/azkv"
 	"go.mozilla.org/sops/v3/cmd/sops/codes"
 	"go.mozilla.org/sops/v3/cmd/sops/common"
-	//"go.mozilla.org/sops/v3/gcpkms"
+	"go.mozilla.org/sops/v3/gcpkms"
 	//"go.mozilla.org/sops/v3/hcvault"
 	"go.mozilla.org/sops/v3/keys"
 	"go.mozilla.org/sops/v3/keyservice"
@@ -185,6 +185,15 @@ func KeyGroups(d *schema.ResourceData, encType string, config *EncryptConfig) ([
 		}
 		//todo support encryption context
 		for _, k := range kms.MasterKeysFromArnString(resourceKmsConf.ARN, nil, resourceKmsConf.Profile) {
+			kmsKeys = append(kmsKeys, k)
+		}
+	}
+
+	if "gcpkms" == encType {
+		gcpkmsConf := d.Get("gcpkms").(map[string]interface{})
+		resourceIDs := gcpkmsConf["ids"]
+
+		for _, k := range gcpkms.MasterKeysFromResourceIDString(resourceIDs) {
 			kmsKeys = append(kmsKeys, k)
 		}
 	}

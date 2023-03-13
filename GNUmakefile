@@ -3,7 +3,7 @@ VERSION_TAG = $(shell git describe --tags --match='v*' --always)
 RELEASE = $(patsubst v%,%,$(VERSION_TAG))# Remove leading v to comply with Terraform Registry conventions
 VERSION_NUMBER = $(shell git describe --tags --match='v*' --always | cut -c 2- )
 CROSSBUILD_OS   = linux windows darwin
-CROSSBUILD_ARCH = amd64 # arm64 386
+CROSSBUILD_ARCH = amd64 arm64# arm64 386
 SKIP_OSARCH     = darwin_386 # windows_arm64
 OSARCH_COMBOS   = $(filter-out $(SKIP_OSARCH),$(foreach os,$(CROSSBUILD_OS),$(addprefix $(os)_,$(CROSSBUILD_ARCH))))
 RELEASE_FOLDER  = ~/.terraform.d/plugins/registry.terraform.io/lokkersp/sops/$(VERSION_NUMBER)/linux_amd64

@@ -6,7 +6,7 @@ CROSSBUILD_OS   = linux windows darwin
 CROSSBUILD_ARCH = amd64 # arm64 386
 SKIP_OSARCH     = darwin_386 # windows_arm64
 OSARCH_COMBOS   = $(filter-out $(SKIP_OSARCH),$(foreach os,$(CROSSBUILD_OS),$(addprefix $(os)_,$(CROSSBUILD_ARCH))))
-RELEASE_FOLDER  = ~/.terraform.d/plugins/registry.terraform.io/lokkersp/sops/$(VERSION_NUMBER)/linux_amd64
+RELEASE_FOLDER  = ~/.terraform.d/plugins/registry.terraform.io/lokkersp/sops/$(VERSION_NUMBER)
 
 
 default: build
@@ -39,7 +39,10 @@ $(GOPATH)/bin/gox:
 install: crossbuild
 	@echo ">> install locally"
 	mkdir -p $(RELEASE_FOLDER)
-	cp binaries/$(VERSION_TAG)/linux_amd64/terraform-provider-sops_$(VERSION_TAG) $(RELEASE_FOLDER)/terraform-provider-sops_$(VERSION_TAG)
+	set -e; for OSARCH in $(OSARCH_COMBOS); do \
+		cp -Rf binaries/$(VERSION_TAG)/$$OSARCH/ $(RELEASE_FOLDER)/$$OSARCH; \
+	done
+
 # ./bin/hub release edit -m "" -a "releases/terraform-provider-sops_v0.6.4_linux_amd64.zip" v0.6.4
 # ./bin/hub release edit -m "" -a "releases/terraform-provider-sops_0.6.4_linux_amd64.zip#terraform-provider-sops_0.6.4_linux_amd64.zip" v0.6.4
 release: crossbuild bin/hub
